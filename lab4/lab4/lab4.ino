@@ -40,11 +40,7 @@ void loop() {
   while(millis() < buttonTime + buttonWaitTime) { 
     // the loop will be broken after (buttonWaitTime) since its began or manually after button press
     buttonState = digitalRead(buttonPin); // reading button state
-    if(buttonState == HIGH) {
-      enablePedestrian = true; // if button pressed once the enablePedestrian will be set to true
-      delay(buttonTime + buttonWaitTime - millis()); // setting a delay for the rest unused time to keep accurate yellow led work duration
-      break; // breaking loop manually
-    }
+    if(buttonState == HIGH) enablePedestrian = true;
   }
   digitalWrite(carsYellowLedPin, LOW); // ssetting yellow led off
 
