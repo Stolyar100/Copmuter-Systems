@@ -165,12 +165,15 @@ void loop() {
 
   digitalWrite(carsYellowLedPin, LOW); // disabling cars yellow led
 
-  Serial.println("Current temperature: ");
-  Serial.println(getTemperature());
+  Serial.print("Current temperature: ");
+  Serial.print(getTemperature());
 
-  Serial.println("Current light level: ");
-  Serial.println(analogRead(photoresistorPin));
+  Serial.print("  Current light level: ");
+  Serial.print(analogRead(photoresistorPin));
 
-  Serial.println("Current distance: ");
+  Serial.print("  Current frequency: ");
+  Serial.print(map(analogRead(photoresistorPin), 0, 1023, 50, 20000));
+
+  Serial.print("  Current distance: ");
   Serial.println(getDinstance());
 }
