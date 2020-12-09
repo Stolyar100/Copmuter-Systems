@@ -83,8 +83,33 @@ void closeBarrier(int workTime) {
   }
 }
 
+void printSerialStatus() {
+  // function to print sensors values via serial
+  int frequency; // init variable for ptrinting frequency
+  
+  Serial.print("Current temperature: ");
+  Serial.print(getTemperature());
+
+  Serial.print("  Current light level: ");
+  Serial.print(analogRead(photoresistorPin));
+
+  Serial.print("  Current distance: ");
+  Serial.print(getDinstance());
+
+  Serial.print("  Current frequency: ");
+
+  if(enableDangerAlert) {
+    Serial.print("danger - ");
+    frequency = (50 + variant * 200);
+  } else {
+    frequency = map(analogRead(photoresistorPin), 0, 1023, 50, 20000);
+  }
+
+  Serial.println(frequency);
+}
+
 void setup() {
-  Serial.begin(9600); //Start the Serial Port at 9600 baud
+  Serial.begin(9600); // Start the Serial Port at 9600 baud
   // setting leds pins pinMode to output
   pinMode(carsGreenLedPin, OUTPUT);
   pinMode(carsYellowLedPin, OUTPUT);
@@ -107,6 +132,8 @@ void loop() {
   setZoomer(); // re enabling zoomer to update tone frequency
 
   digitalWrite(carsGreenLedPin, HIGH);  // enable green cars led
+  printSerialStatus();  // print sensors values via serial
+
 
   dangerCheckTime = millis(); // save time when checking distant loop begins
   while(millis() < dangerCheckTime + redGreenDuration * 1000) { 
@@ -116,10 +143,12 @@ void loop() {
       setZoomerDanger();
     }
   }
+  printSerialStatus();  // print sensors values via serial
 
   digitalWrite(carsGreenLedPin, LOW); // disable green cars led
 
   digitalWrite(carsYellowLedPin, HIGH); // enable yellow led 
+  printSerialStatus();  // print sensors values via serial
   delay(2000);
 
   buttonState = digitalRead(buttonPin); // read button state
@@ -139,6 +168,8 @@ void loop() {
     enableDangerAlert = false;  // set danger alert flag to false
     setZoomer();  // enable zoomer as it must work due to pedestrian red led
   }
+
+  printSerialStatus();  // print sensors values via serial
   
   // checking if pedestrian lights must be used
   if(enablePedestrian) {
@@ -164,16 +195,4 @@ void loop() {
   }
 
   digitalWrite(carsYellowLedPin, LOW); // disabling cars yellow led
-
-  Serial.print("Current temperature: ");
-  Serial.print(getTemperature());
-
-  Serial.print("  Current light level: ");
-  Serial.print(analogRead(photoresistorPin));
-
-  Serial.print("  Current frequency: ");
-  Serial.print(map(analogRead(photoresistorPin), 0, 1023, 50, 20000));
-
-  Serial.print("  Current distance: ");
-  Serial.println(getDinstance());
 }
